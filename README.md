@@ -7,6 +7,8 @@ Clone the following repo:
 git clone https://github.com/tasbolat1/franka_research_ws.git --recursive
 ```
 
+Install prerequisits:
+
 ### Libfranka
 Go to the libfranka, set branch to 0.10.0 and update it
 ```
