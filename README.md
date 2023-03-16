@@ -82,3 +82,7 @@ Run example of robot control
 rosrun robot_control move_robot.py
 ```
 
+
+## TODO
+
+In a current form, the robot ONLY works with panda_hand. We need to integrate robotiq to it.
