@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<!DOCTYPE launch>
+<launch>
+  <arg name="robot_ip" default="172.16.0.2" />
+  <arg name="gripper" default="panda" />
+  <arg name="comport" default="/dev/ttyUSB0" />
+
+  <!-- Set some project specific defaults for the panda arm. -->
+  <node name="set_robot_defaults" pkg="franka_control_wrappers" type="set_panda_defaults.py"  respawn="false" output="screen">
+    <param name="gripper" type="str" value="$(arg gripper)"/>
+  </node>
+
+  <!-- set world frame -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_1" args="0 0 0 0 0 0 world panda_link0" />
+
+  <!-- Run franka_control -->
+  <include file="$(find franka_control)/launch/franka_control.launch" >
+    <arg name="robot_ip" value="$(arg robot_ip)" />
+    <arg name="load_gripper" default="$(eval arg('gripper') == 'panda')" />
+  </include>
+  
+  <!-- Run moviet -->
+  <node name="controller_spawner_position" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="position_joint_trajectory_controller"/>
+
+  <node name="controller_spawner_effort" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="effort_joint_trajectory_controller"/>
+
+  <include file="$(find panda_moveit_config)/launch/move_group.launch">
+    <arg name="load_gripper" value="$(eval arg('gripper') == 'panda')" />
+  </include>
+  
+  <!-- Run velocity controller -->
+  <include file="$(find franka_control_wrappers)/launch/cartesian_velocity_controller.launch">
+    <arg name="stopped" value="true" />
+  </include>
+
+  <!-- Visualize via RVIZ -->
+  <arg if="$(eval arg('gripper') == 'robotiq')" name="rviz_command_args" value="-d $(find robot_control)/launch/panda_robotiq.rviz" />
+  <arg if="$(eval arg('gripper') == 'panda')" name="rviz_command_args" value="-d $(find robot_control)/launch/panda.rviz" />
+
+  <node pkg="rviz" type="rviz" output="screen" name="rviz" args="$(arg rviz_command_args)">
+    <rosparam command="load" file="$(find panda_moveit_config)/config/kinematics.yaml"/>
+  </node>
+
+</launch>

@@ -2,3 +2,9 @@
 	path = src/libfranka
 	url = https://github.com/frankaemika/libfranka
 	branch = 0.10.0
+[submodule "src/franka_ros"]
+	path = src/franka_ros
+	url = https://github.com/frankaemika/franka_ros
+[submodule "src/panda_moveit_config"]
+	path = src/panda_moveit_config
+	url = https://github.com/ros-planning/panda_moveit_config.git

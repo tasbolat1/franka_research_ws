@@ -4,23 +4,12 @@
 Clone the following repo:
 
 ```
-git clone https://github.com/tasbolat1/franka_research_ws.git --recursive
+git clone --recurse-submodules https://github.com/tasbolat1/franka_research_ws.git
 ```
 
-Install prerequisits:
 
 ### Libfranka
-Go to the libfranka, set branch to 0.10.0 and update it
-```
-cd ~/franka_research_ws/src/libfranka
-git checkout 0.10.0
-cd ~/franka_research_ws
-git submodule update --init --recursive --remote
-git checkout 4f9e3cc666e42d267f1ab566869c4f4c552e5b57
-cd common
-git checkout ea26b89aa302b1456c825fb622b414bb3b1013ce
-```
-Build the libfranka using the following commands:
+Go to the libfranka and build it
 ```
 cd ~/franka_research_ws/src/libfranka
 mkdir build
@@ -55,5 +44,28 @@ cmake --build .
 
 https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel
 
+3. If examples in libfranka do not run due to FCI activation, please set Operations as Execution and activate FCL from webbrowser.
 
-## franka_ros
+### franka_ros
+
+Pull recursively any additional updates from franka_ros upstream:
+```
+cd ~/franka_research_ws/src/franka_ros
+git submodule update --init --recursive
+```
+
+### Building all
+
+```
+cd ~/franka_research_ws
+rosdep install --from-paths src --ignore-src --rosdistro noetic -y --skip-keys libfranka
+catkin_make -DCMAKE_BUILD_TYPE=Release -DFranka_DIR:PATH=~/franka_research_ws/src/libfranka/build
+source devel/setup.bash
+```
+*Note:* catkin_make with libfranka can be used just during first time catkin_make. Afterwards just continue with simple ```catkin_make``` command
+
+
+### Usage
+
+
+
