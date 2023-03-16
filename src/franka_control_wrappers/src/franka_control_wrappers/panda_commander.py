@@ -7,21 +7,20 @@ from moveit_commander.conversions import list_to_pose
 import franka_gripper.msg
 from franka_control_wrappers.panda_gripper import PandaGripper
 from franka_control_wrappers.robotiq_gripper import RobotiqGripper
-from franka_control.msg import ErrorRecoveryActionGoal
-
+from franka_msgs.msg import ErrorRecoveryActionGoal
 
 class PandaCommander(object):
     """
     PandaCommander is a class which wraps some basic moveit functions for the Panda Robot,
     and some via the panda API
     """
-    def __init__(self, gripper="panda", group_name=None):
+    def __init__(self, gripper="panda", group_name=None, ee=None):
         self.robot = moveit_commander.RobotCommander()
         self.scene = moveit_commander.PlanningSceneInterface()
 
         self.groups = {}
         self.active_group = None
-        self.set_group(group_name)
+        self.set_group(group_name, ee)
         self.saved_joint_poses = {}
 
         preset_joint_values = rospy.get_param("/panda_setup/saved_joint_values/")
@@ -62,7 +61,7 @@ class PandaCommander(object):
         print(self.robot.get_current_state())
         print("")
 
-    def set_group(self, group_name):
+    def set_group(self, group_name, ee=None):
         """
         Set the active move group
         :param group_name: move group name
@@ -77,6 +76,10 @@ class PandaCommander(object):
                     raise ValueError('Group name %s is not valid. Options are %s' % (group_name, self.robot.get_group_names()))
                 self.groups[group_name] = moveit_commander.MoveGroupCommander(group_name)
             self.active_group = self.groups[group_name]
+
+        # attach ee link
+        if ee:
+            self.active_group.set_end_effector_link(ee)
 
     def goto_joints(self, joint_values, velocity=1.0, group_name=None, wait=True):
         """
@@ -141,6 +144,25 @@ class PandaCommander(object):
         self.active_group.stop()
         self.active_group.clear_pose_targets()
         return success
+    
+    def goto_joints(self, joints, velocity=1.0, group_name=None, wait=True):
+        """
+        Move to joints
+        :param joints: List of joints [q0,q1,q2,q3,q4,q5,q6]
+        :param velocity: Velocity (fraction of max) [0.0, 1.0]
+        :param group_name: Move group (use current if None)
+        :param wait: Wait for completion if True
+        :return: Bool success
+        """
+        if group_name:
+            self.set_group(group_name)
+        if not self.active_group:
+            raise ValueError('No active Planning Group')
+
+        self.active_group.set_max_velocity_scaling_factor(velocity)
+        success = self.active_group.go(joints, wait=wait)
+        self.active_group.stop()
+        return success
 
     def goto_pose_cartesian(self, pose, velocity=1.0, group_name=None, wait=True):
         """
@@ -203,5 +225,6 @@ class PandaCommander(object):
         """
         Call the error reset action server.
         """
+
         self.reset_publisher.publish(ErrorRecoveryActionGoal())
         rospy.sleep(3.0)

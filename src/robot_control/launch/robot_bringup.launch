@@ -6,6 +6,8 @@
   <arg name="comport" default="/dev/ttyUSB0" />
 
   <!-- Set some project specific defaults for the panda arm. -->
+  <rosparam if="$(eval arg('gripper') == 'panda')" command="load" file="$(find robot_control)/cfg/panda_setup.yaml" ns="/panda_setup"/>
+  <rosparam if="$(eval arg('gripper') == 'robotiq')" command="load" file="$(find robot_control)/cfg/panda_setup_robotiq.yaml" ns="/panda_setup"/>
   <node name="set_robot_defaults" pkg="franka_control_wrappers" type="set_panda_defaults.py"  respawn="false" output="screen">
     <param name="gripper" type="str" value="$(arg gripper)"/>
   </node>
@@ -20,7 +22,7 @@
   </include>
   
   <!-- Run moviet -->
-  <node name="controller_spawner_position" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="position_joint_trajectory_controller"/>
+  <!-- <node name="controller_spawner_position" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="position_joint_trajectory_controller"/> -->
 
   <node name="controller_spawner_effort" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="effort_joint_trajectory_controller"/>
 

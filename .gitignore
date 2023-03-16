@@ -2,3 +2,5 @@ build/
 devel/
 .vscode/
 .catkin_workspace
+
+src/franka_control_wrappers/src/franka_control_wrappers/__pycache__/

@@ -15,7 +15,7 @@ ftcb_srv = rospy.ServiceProxy('/franka_control/set_force_torque_collision_behavi
 ftcb_msg = SetForceTorqueCollisionBehaviorRequest()
 ftcb_msg.lower_torque_thresholds_nominal = [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]
 ftcb_msg.upper_torque_thresholds_nominal = [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]
-ftcb_msg.lower_force_thresholds_nominal = [10.0, 10.0, 10.0, 10.0, 10.0, 10.0]  # These will be used by the velocity controller to stop movement
+ftcb_msg.lower_force_thresholds_nominal = [20.0, 20.0, 20.0, 20.0, 20.0, 20.0]  # These will be used by the velocity controller to stop movement
 ftcb_msg.upper_force_thresholds_nominal = [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]
 
 res = ftcb_srv.call(ftcb_msg).success

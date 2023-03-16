@@ -1,5 +1,10 @@
 # franka_research_ws
 
+## PREREQUISITS
+1. Install ROS Noetic
+2. Python3.7 or above
+3. RT kernel based Linux 20.04
+
 ## INSTALLATION
 Clone the following repo:
 
@@ -65,7 +70,15 @@ source devel/setup.bash
 *Note:* catkin_make with libfranka can be used just during first time catkin_make. Afterwards just continue with simple ```catkin_make``` command
 
 
-### Usage
+## USAGE
 
+Run robot stuff:
+```
+roslaunch robot_control robot_bringup.launch robot_ip:=172.16.0.2 gripper:=panda
+```
 
+Run example of robot control
+```
+rosrun robot_control move_robot.py
+```
 

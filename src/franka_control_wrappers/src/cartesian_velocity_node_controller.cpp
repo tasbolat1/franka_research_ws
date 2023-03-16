@@ -109,6 +109,8 @@ void CartesianVelocityNodeController::cartesian_velocity_callback(const geometry
   velocity_command[4] = msg->angular.y;
   velocity_command[5] = msg->angular.z;
 
+  ROS_DEBUG("HERE %f", msg->linear.z)
+
   time_since_last_command = ros::Duration(0.0);
 }
 
