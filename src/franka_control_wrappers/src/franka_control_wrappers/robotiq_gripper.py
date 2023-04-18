@@ -14,7 +14,15 @@ class RobotiqGripper(BaseGripper):
         Home and initialise the gripper
         :return: Bool success
         """
-        raise NotImplementedError
+        client = actionlib.SimpleActionClient('robotiq', control_msgs.msg.GripperCommandAction)
+        client.wait_for_server()
+        goal = control_msgs.msg.GripperCommandGoal()
+        goal.command.position = 0.0
+        goal.command.max_effort = 40
+        client.send_goal(goal)
+        client.wait_for_result()
+        rospy.sleep(1.0)
+        return True
 
     def set_gripper(self, width, speed=0.1, effort=40, wait=True):
         """

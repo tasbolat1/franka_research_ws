@@ -8,3 +8,6 @@
 [submodule "src/panda_moveit_config"]
 	path = src/panda_moveit_config
 	url = https://github.com/ros-planning/panda_moveit_config.git
+[submodule "src/robotiq"]
+	path = src/robotiq
+	url = https://github.com/TAMS-Group/robotiq.git
